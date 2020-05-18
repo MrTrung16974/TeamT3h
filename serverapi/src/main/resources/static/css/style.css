@@ -1,0 +1,81 @@
+h3 {
+    color: blue;
+}
+
+div#lst-product {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 20px;
+    padding: 20px;
+}
+.card {
+    text-align: center;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    max-width: 300px;
+    margin: auto;
+    text-align: center;
+    font-family: arial;
+}
+
+.price {
+    color: grey;
+    font-size: 22px;
+}
+
+.card button {
+    border: none;
+    outline: 0;
+    padding: 12px;
+    color: white;
+    background-color: #000;
+    text-align: center;
+    cursor: pointer;
+    width: 100%;
+    font-size: 18px;
+}
+
+.card button:hover {
+    opacity: 0.7;
+}
+
+div.actor {
+    width: 700px;
+    margin: auto;
+}
+div.actor-item {
+    display: flex;
+    margin-top: 50px;
+}
+
+.body-actor {
+    padding: 25px 12px;
+    width: 63%;
+}
+
+h3.name-actor {
+    color: red;
+    padding: 10px 0px;
+    border-bottom: 1px solid #d6cdcd;
+}
+
+p.age-actor {
+    color: #a29494;
+}
+
+p.country-actor {
+    color: #a29494;
+}
+div.pagination {
+    margin: 20px;
+}
+
+div.pagination>a {
+    cursor: pointer;
+    width: 20px;
+    height: auto;
+    background-color: #2f0aa2;
+    text-align: center;
+    margin-left: 10px;
+    border-radius: 5px;
+    color: #fff !important;
+}

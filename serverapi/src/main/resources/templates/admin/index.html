@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Actor</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+    <link rel="stylesheet" type="text/css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="container mt-5">
+    <div id="addProduct" data-toggle="modal"
+         data-target="#modalAddActor"
+         class="btn btn-light">Add New Product</div>
+    <div class="form-group my-4">
+        <input th:onkeyup="searchActor()" type="email" id="actorName" class="form-control mb-2" placeholder="Nhập tên sản phẩm bạn muốn tìm!">
+        <button th:onclick="searchActor()" type="submit" class="btn btn-primary">Serach</button>
+    </div>
+    <div id="lst-product">
+        <div th:each="actor : ${listActor}" class="card">
+            <img width="200" height="250" src="https://saobiz.net/wp-content/uploads/2016/11/ngoc-trinh-trang-da-blogtamsuvn5_01.jpg"
+                 alt="Denim Jeans" style="width:100%">
+            <h3 th:text="${actor.getName()}"></h3>
+            <p th:text="${actor.getAge()}+ ' Tuổi'" class="price"></p>
+            <p th:text="${actor.getCountry()}"></p>
+            <p><button>Add to Cart</button></p>
+            <p><button th:onclick="'detailActor('+ ${actor.getId()} +')'" data-toggle="modal"
+                       data-target="#modalDetailActor">Detail</button></p>
+            <p><button th:onclick="'deleteProduct('+ ${actor.getId()} +')'" >Delete</button></p>
+        </div>
+    </div>
+    <div id="pagination" class="pagination" >
+        <a th:each="i : ${#numbers.sequence(1, total)}"
+           th:onclick="'paginationActor('+${i-1}+')'" th:text="${i}">
+        </a>
+    </div>
+
+    <div class="modal fade" id="modalAddActor" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalAddActor">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="createNameActor">Tên diễn viên :</label>
+                        <input type="text" class="form-control" id="createNameActor">
+                    </div>
+                    <div class="form-group">
+                        <label for="createAgeActor">Tuổi diễn viên :</label>
+                        <input type="text" class="form-control" id="createAgeActor">
+                    </div>
+                    <div class="form-group">
+                        <label for="createActorConutry">Đất nước diễn viên :</label>
+                        <input type="text" class="form-control" id="createActorConutry">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" onclick="addProduct()" class="btn btn-primary"
+                        >Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalDetailActor" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalDetailActor">Detail Actor</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div id="model-actor" class="modal-body">
+                    <input type="hidden" id="editActorId">
+                    <div class="form-group">
+                        <label for="editActorName">Tên diễn viên :</label>
+                        <input type="text" class="form-control" id="editActorName" />
+                    </div>
+                    <div class="form-group">
+                        <label for="editActorConutry">Đất nước diễn viên :</label>
+                        <input type="text" class="form-control" id="editActorConutry" />
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" onclick="editProduct()" class="btn btn-secondary"
+                                data-dismiss="modal">Sửa</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/popper.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+<script th:src="@{/js/adminScript.js}"></script>
+</body>
+</html>
