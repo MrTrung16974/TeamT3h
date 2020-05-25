@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Client</title>
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container" style="margin-bottom: 30px; margin-top: 20px;">
+    <a style="text-decoration: none;" href="http://localhost:8083/index"><h1>Client</h1></a>
+    <button type="button" onclick="loadData()" class="btn btn-primary">Load/Update Data</button>
+
+    <!-- Button trigger modal create new product -->
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#create-new-product">
+        Create new product
+    </button>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#search-product-by-id">
+        Search product by ID
+    </button>
+    <br>
+    <br>
+    <form class="form-inline">
+        <div class="form-group mb-2">
+        <div class="form-group mx-sm-3 mb-2">
+            <label for="keyword-search" class="sr-only">Search by key word</label>
+            <input type="text" class="form-control" id="keyword-search" placeholder="Keyword">
+        </div>
+        <button type="button" id="search-by-keyword" onclick="searchProductByKey()"  class="btn btn-primary mb-2">Search</button>
+        </div>
+    </form>
+    <br>
+    <br>
+    <h5>Pagination</h5>
+    <br>
+    <br>
+    <button type="button" id="active-pagination" onclick="activePagination()"  class="btn btn-primary mb-2">Active Pagination</button>
+    <br>
+    <br>
+    <nav aria-label="Page navigation example">
+        <ul id="pagination" class="pagination">
+
+        </ul>
+    </nav>
+</div>
+
+    <div class="container">
+        <div id="list-product" class="row">
+        </div>
+    </div>
+
+
+    <!-- Modal create new product -->
+    <div class="modal fade" id="create-new-product" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Create new product</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="create-new-name">Product name</label>
+                        <input type="text" class="form-control" id="create-new-name">
+                    </div>
+                    <div class="form-group">
+                        <label for="create-new-price">Product price</label>
+                        <input type="text" class="form-control" id="create-new-price">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button onclick="addProduct()" type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- Modal search product -->
+<div class="modal fade" id="search-product-by-id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel2">Search product by ID</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="search-id">ID</label>
+                    <input type="text" class="form-control" id="search-id">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button onclick="searchProductByID()" type="button" class="btn btn-primary">Search</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+<script>
+    function loadData() {
+        $('#pagination').empty();
+        $('#list-product').empty();
+        $.ajax({
+            url: "http://localhost:8082/api/products",
+            success: function (result) {
+                console.log("data response", result);
+                if (result.code == '00') {
+                    renderData(result.data);
+                } else {
+                    alert("Error");
+                }
+            }
+        })
+
+        function renderData(data) {
+
+            data.map(item => {
+                $('#list-product').append(`<div class="card col-3" style="width: 18rem;">
+  <img src="https://cf.shopee.vn/file/110be78c00d495ae468f1d1bd9f51815" class="card-img-top" alt="...">
+  <div class="card-body">
+    <h5 class="card-title">ID: ${item.id}</h5>
+    <h5 class="card-title">Name: ${item.name}</h5>
+    <p class="card-text">Price: ${item.price}</p>
+    <p class="card-text">Created date ${item.createdDate}</p>
+    <button onclick="deleteProduct(${item.id})" class="btn btn-primary">Delete</button>
+    <button onclick="openFormEdit(${item.id})"  class="btn btn-primary">Edit</button>
+  </div>
+</div>`);
+        })
+        }
+    }
+    function renderSingleData(product) {
+        $('#list-product').empty();
+        $('#list-product').append(`<div class="card col-3" style="width: 18rem;">
+  <img src="https://cf.shopee.vn/file/110be78c00d495ae468f1d1bd9f51815" class="card-img-top" alt="...">
+  <div class="card-body">
+    <h5 class="card-title">ID: ${product.id}</h5>
+    <h5 class="card-title">Name: ${product.name}</h5>
+    <p class="card-text">Price: ${product.price}</p>
+    <p class="card-text">Created date ${product.createdDate}</p>
+    <button onclick="deleteProduct(${product.id})" class="btn btn-primary">Delete</button>
+    <button onclick="openFormEdit(${product.id})"  class="btn btn-primary">Edit</button>
+  </div>
+</div>`);
+    }
+
+    function addProduct(){
+        let dataJson = {
+            name: $('#create-new-name').val(),
+            price: $('#create-new-price').val()
+        }
+        $.ajax({
+            url:"http://localhost:8082/api/createNewProduct",
+            type:"POST",
+            data: JSON.stringify(dataJson),
+            contentType: "application/json",
+            success: function (result){
+                console.log("response", result);
+                if(result.code == "00") alert("Success create new product");
+                else if(result.code == "98") alert("Error Invalid data! Failed to create new data!");
+                else if(result.code == "115") alert("Error Unknown! Failed to create new data!");
+                $('#create-new-product').modal('hide');
+                loadData();
+            }
+        })
+    }
+
+    function openFormEdit(id) {
+        sessionStorage.setItem("id", id);
+        $(location).attr('href', 'http://localhost:8083/edit/' + id)
+    }
+    function deleteProduct(id) {
+        $.ajax({
+            url: "http://localhost:8082/api/deleteProductByID/" + id,
+            success: function (result) {
+                console.log("data response", result);
+                if(result.code == "00") alert("Success delete product");
+                else if(result.code == "404") alert("Not found! Failed to delete data!");
+                else if(result.code == "115") alert("Error Unknown! Failed to delete data!");
+                loadData();
+            }
+        })
+    }
+    function searchProductByID() {
+        let id = $('#search-id').val();
+        $.ajax({
+            url: "http://localhost:8082/api/product/" + id,
+            success: function (result) {
+                console.log("data response", result);
+                $('#search-product-by-id').modal('hide');
+                if(result.code == "00"){
+                    renderSingleData(result.data);
+                }
+                else if(result.code == "98") alert("Invalid data!")
+                else if(result.code == "404") alert("Not found!");
+                else if(result.code == "115") alert("Error Unknown!");
+            }
+        })
+    }
+    function renderDataSearchByKey(listProduct) {
+        $('#list-product').empty();
+        listProduct.map(product => {
+            $('#list-product').append(`<div class="card col-3" style="width: 18rem;">
+  <img src="https://cf.shopee.vn/file/110be78c00d495ae468f1d1bd9f51815" class="card-img-top" alt="...">
+  <div class="card-body">
+    <h5 class="card-title">ID: ${product.id}</h5>
+    <h5 class="card-title">Name: ${product.name}</h5>
+    <p class="card-text">Price: ${product.price}</p>
+    <p class="card-text">Created date ${product.createdDate}</p>
+    <button onclick="deleteProduct(${product.id})" class="btn btn-primary">Delete</button>
+    <button onclick="openFormEdit(${product.id})"  class="btn btn-primary">Edit</button>
+  </div>
+</div>`);
+        })
+    }
+    function searchProductByKey(){
+        let key = $('#keyword-search').val();
+        $.ajax({
+            url: "http://localhost:8082/api/searchProductByKey/" + key,
+            success: function (result) {
+                console.log("data response", result);
+                if(result.code == "00"){
+                    renderDataSearchByKey(result.data);
+                }
+                else  if (result.code == "98") {
+                    alert("Invalid data!");
+                }
+                else if(result.code == "404") {
+                    alert("Not found!");
+                }
+                else if(result.code == "115") {
+                    alert("Error Unknown!");
+                }
+            }
+        })
+    }
+    var total;
+    var productPerPage = 8;
+    var page;
+    var currentPage = 1;
+    function renderDataPage(page, data) {
+        $('#list-product').empty();
+        for(let i = productPerPage*(page - 1); i < Math.min(total,productPerPage*(page - 1) + productPerPage);i++){
+            $('#list-product').append(`<div class="card col-3" style="width: 18rem;">
+  <img src="https://cf.shopee.vn/file/110be78c00d495ae468f1d1bd9f51815" class="card-img-top" alt="...">
+  <div class="card-body">
+    <h5 class="card-title">ID: ${data[i].id}</h5>
+    <h5 class="card-title">Name: ${data[i].name}</h5>
+    <p class="card-text">Price: ${data[i].price}</p>
+    <p class="card-text">Created date ${data[i].createdDate}</p>
+    <button onclick="deleteProduct(${data[i].id})" class="btn btn-primary">Delete</button>
+    <button onclick="openFormEdit(${data[i].id})"  class="btn btn-primary">Edit</button>
+  </div>
+</div>`)
+        }
+    }
+    function activePagination() {
+        $.ajax({
+            url: "http://localhost:8082/api/products",
+            success: function (result) {
+                $('#pagination').empty();
+                console.log("data response", result);
+                if (result.code == '00') {
+                    console.log("Success");
+                } else {
+                    alert("Error");
+                }
+                total = result.data.length;
+                productPerPage = 8;s="page-item"><button onclick="changPage($
+                if(total % productPerPage == 0) page = total/productPerPage;
+                else{
+                    page = Math.floor(total / productPerPage) +1;
+                }
+                for(let i = 0; i < page;i++) {
+                    if(i+1==currentPage){
+                        $('#pagination').append(`<li class="page-item"><button onclick="changPage(${i+1})" th:id="page-button-${i+1}" class="btn btn-danger">${i+1}</button></li>`);
+                    }
+                    else
+                        $('#pagination').append(`<li class="page-item"><button onclick="changPage(${i+1})" th:id="page-button-${i+1}" class="btn btn-primary">${i+1}</button></li>`);
+                }
+                renderDataPage(currentPage,result.data);
+            }
+        })
+
+    }
+    function changPage(page) {
+        currentPage = page;
+        activePagination();
+
+    }
+</script>
+</html>

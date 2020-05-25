@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit product</title>
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+</head>
+</head>
+<body>
+<h1>Product detail</h1>
+<div id="product-detail" class="container"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+<script>
+    var id = sessionStorage.getItem("id");
+    console.log(id);
+    showDetail();
+    function showDetail(){
+        $.ajax({
+            url: "http://localhost:8082/api/product/" + id,
+            success: function (result) {
+                console.log("data response", result);
+                if (result.code == '00') {
+                    renderData(result.data);
+                } else {
+                    alert("Error");
+                }
+            }
+        })
+    }
+    function renderData(product) {
+            $('#product-detail').append(`<div style="padding-left: 20px; padding-top: 10px;" class="card">
+  <img src="https://cf.shopee.vn/file/110be78c00d495ae468f1d1bd9f51815" alt="Denim Jeans" style="width:100%">
+  <div class="form-group">
+                        <h3>ID: ${product.id}</h3>
+                        <label for="edit-name">Product name</label>
+                        <input type="text" value="${product.name}" class="form-control" id="edit-name">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-price">Product price</label>
+                        <input type="text" value="${product.price}" class="form-control" id="edit-price">
+                    </div>
+                    <p>Created date: ${product.createdDate}</p>
+  <button style="width: 150px;" class="btn btn-primary mg-auto" onclick="editProduct(${product.id})">Edit</button>
+  <br>
+  <a style="width: 150px;margin-bottom: 20px; " href="http://localhost:8083/index" class="btn btn-primary mg-auto">Home</a>
+</div>`);
+    }
+    function editProduct(id) {
+        let dataJson = {
+            name: $('#edit-name').val(),
+            price: $('#edit-price').val()
+
+        }
+        $.ajax({
+            url:"http://localhost:8082/api/editProductByID/" + id,
+            type:"PUT",
+            data: JSON.stringify(dataJson),
+            contentType: "application/json",
+            success: function (result){
+                console.log("response", result);
+                if(result.code == "00") alert('Success edit product!');
+                else if(result.code == "404") alert('Data not found! Failed to edit!');
+                else if(result.code == "98") alert('Invalid data! Failed to edit!');
+                else if(result.code == "115") alert('Error Unknown! Failed to edit!')
+                showDetail();
+            }
+        })
+    }
+</script>
+</html>

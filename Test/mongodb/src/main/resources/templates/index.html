@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" type="text/css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+
+</head>
+<body>
+<button style="margin: 20px 0px 0px 20px;" type="button" class="btn btn-primary" data-toggle="modal" data-target="#create-new-product">
+    Create new product
+</button>
+
+<div class="container mb-5">
+    <h2>Giỏ Hàng</h2>
+    <p>Số sản phẩm trong giỏ: <span id="size-cart"></span></p>
+    <div id="list-item-cast" class="row">
+    </div>
+    <p>Total : <span id="total-cast">0</span></p>
+    <div class="info-cast-product">
+        <p>Tổng số tiền : <span id="price-number"></span></p>
+    </div>
+    <button data-toggle="modal" onclick="paymentToCastDB()" data-target="#payment-product" class="btn btn-success">Thanh toán</button>
+</div>
+
+<div class="container">
+    <div id="list-product" class="row">
+        <div class="card col-6 col-sm-6 col-md-4 col-lg-3 col-xl-3" style="width: 100%;" th:each="product: ${lstProduct}" >
+            <img src="https://cf.shopee.vn/file/110be78c00d495ae468f1d1bd9f51815" class="card-img-top" alt="...">
+            <div class="card-body" >
+                <h5 class="card-title" th:text="${product.getId()}"></h5>
+                <h5 class="card-title"th:text="${product.getName()}"></h5>
+                <p class="card-text"th:text="${product.getPrice()}"></p>
+                <p class="card-text"th:text="${product.getNumber()}"></p>
+                <button th:onclick="addToCastDB(1)" class="btn btn-primary">Add to cart</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal create new product -->
+<div class="modal fade" id="create-new-product" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="create-new-product">Create new Actor</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="actorName">Actor Name</label>
+                    <input type="text" class="form-control" id="actorName">
+                </div>
+                <div class="form-group">
+                    <label for="actorAge">Actor Age</label>
+                    <input type="text" class="form-control" id="actorAge">
+                </div>
+                <div class="form-group">
+                    <label for="actorCountry">Actor Country</label>
+                    <input type="text" class="form-control" id="actorCountry">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="payment-product" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="payment-product">Create new Actor</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="actorName">User Name</label>
+                    <input type="text" class="form-control" id="userName">
+                </div>
+                <div class="form-group">
+                    <label for="userAddress">User Address</label>
+                    <input type="text" class="form-control" id="userAddress">
+                </div>
+                <div class="form-group">
+                    <label for="userNumber">User Number</label>
+                    <input type="text" class="form-control" id="userNumber">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success">Thanh toán</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+<script th:src="@{/js/logicScript.js}"></script>
+<script th:src="@{/js/rederDataScript.js}"></script>
+
+</body>
+</html>

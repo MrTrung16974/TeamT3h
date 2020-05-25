@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Test</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+</head>
+
+<style type="text/css">
+    body {
+        background-color: #f5f5f5;
+        font-family: sans-serif;
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+
+    a {
+        transition: 0.3s;
+    }
+
+    .card {
+        overflow: hidden;
+        box-shadow: 0 3px 17px rgba(0, 0, 0, 0.15), 0 0 5px rgba(0, 0, 0, 0.15);
+    }
+
+    .card > img {
+        width: 100%;
+        height: 100%;
+    }
+
+    .add-to-cart {
+        display: block;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        text-align: center;
+        font-size: 1.3rem;
+        line-height: 59px;
+        position: absolute;
+        right: 1.25rem;
+        top: -30px;
+        box-shadow: 0 2px 7px rgba(0, 0, 0, 0.4);
+    }
+
+    .add-to-cart:hover {
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+    }
+
+    .labels {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        opacity: 0.8;
+    }
+
+    .labels > div {
+        width: 150px;
+        position: absolute;
+    }
+
+    .label-new {
+        left: -40px;
+        top: 20px;
+        transform: rotate(-45deg);
+    }
+
+    .label-sale {
+        right: -40px;
+        top: 20px;
+        transform: rotate(45deg);
+    }
+</style>
+<body>
+
+<div class="container mt-5">
+    <div id="addProduct" data-toggle="modal"
+         data-target="#modalAddProduct"
+         class="btn btn-success">Add New Product</div>
+    <div class="form-group my-4">
+        <input type="email" id="Product" class="form-control w-50 mb-2" placeholder="Nhập tên sản phẩm bạn muốn tìm!">
+        <button id="searchProduct" type="submit" class="btn btn-primary">Serach</button>
+    </div>
+        <h1 th:text="${message}"></h1>
+    <div class="row">
+        <div th:each="product : ${lstProduct}"
+             class="col-md-4 mb-3 mb-md-0">
+            <div class="card h-100">
+                <div class="labels">
+                    <div class="label-new bg-success text-white text-center py-1">New</div>
+                    <div class="label-sale bg-primary text-white text-center py-1">Sale</div>
+                </div>
+                <img th:src="@{${product.getImage()}}" class="img-fluid" id="imageProduct" alt="">
+                <div class="card-body position-relative d-flex flex-column">
+                    <a href="#" class="add-to-cart bg-primary text-white" data-toggle="tooltip" data-placement="left"
+                       title="Add To Cart">
+                        <i class="fa fa-opencart" aria-hidden="true"></i>
+                    </a>
+                    <h3 class="text-success" th:text="${'$' + product.getPrice()}"></h3>
+                    <div class="rating text-warning">
+                        <i th:each="i : ${#numbers.sequence(1,5)}"
+                           th:class="${product.getStar() >= i ? 'fa fa-star' : 'fa fa-star-o'}"
+                           aria-hidden="true"></i>
+                    </div>
+                    <h4 th:text="${product.getName()}"></h4>
+                    <p th:text="${product.getDescription()}"></p>
+                    <a th:href="@{${'/edit/' + product.getId() + '/detail'}}"
+                       class="btn btn-success btn-block mt-auto">
+                        <i class="fa fa-eye" aria-hidden="true"></i>
+                        Chi tiết
+                    </a>
+
+                    <a th:href="@{${'/delete/' + product.getId()}}"
+                       class="btn btn-danger btn-block mt-3"><i class="fa fa-eye" aria-hidden="true"></i>
+                        Xóa
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<!-- Modal -->
+<div class="modal fade" id="modalAddProduct" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="productName">Name :</label>
+                    <input type="text" class="form-control" id="productName" aria-describedby="emailHelp" placeholder="Nhập tên của sản phẩm">
+                </div>
+                <div class="form-group">
+                    <label for="productDescription">Description :</label>
+                    <input type="text" class="form-control" id="productDescription" aria-describedby="emailHelp" placeholder="Nhập mô tả của sản phẩm">
+                </div>
+                <div class="form-group">
+                    <label for="productPrice">Price :</label>
+                    <input type="number" class="form-control" id="productPrice" aria-describedby="emailHelp" placeholder="Nhập giá tiền của sản phẩm">
+                </div>
+                <div class="form-group">
+                    <label for="productStar">Star :</label>
+                    <input type="number" class="form-control" id="productStar" aria-describedby="emailHelp" placeholder="Nhập đánh giả của sản phẩm từ 1 - 5">
+                </div>
+                <div class="form-group" style="border: none">
+                    <label for="productImage">Image :</label>
+                    <input type="file" name="file" class="form-control" id="productImage" aria-describedby="emailHelp">
+                    <img id="newImageProduct" width="200" height="200"  alt="">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" id="submitProduct" class="btn btn-primary"
+                        >Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    // $('[data-toggle="tooltip"]').tooltip();
+    $(document).ready(function() {
+        $("#productImage").on("change", function () {
+            var formData = new FormData();
+            console.log(formData);
+            formData.append('file', $('#productImage')[0].files[0]);
+
+            $.ajax({
+                url: 'http://localhost:8080/upload',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    console.log(data);
+                    $("#imageProduct").attr("src", data);
+                    $("#newImageProduct").attr("src", data);
+                    toastr.success('Upload ảnh thành công ', 'Haha!');
+                },
+                error: function () {
+                    toastr.error('có lỗi xảy ra . Xin vui lòng thử lại', 'Inconceivable!');
+                }
+            })
+        })
+        $("#submitProduct").on('click', function () {
+            var product = {
+                name:$("#productName").val(),
+                description:$("#productDescription").val(),
+                price: $("#productPrice").val(),
+                star: $("#productStar").val(),
+                image: $("#newImageProduct").attr('src'),
+            };
+            console.log(product);
+            $.ajax({
+                type:"POST",
+                url:"http://localhost:8080/create-product",
+                data:JSON.stringify(product),
+                contentType: 'application/json',
+                success: function(response, data){
+                    // server trả về HTTP status code là 200 => Thành công
+                    //hàm đc thực thi khi request thành công không có lỗi
+                    //reload lại trang
+                    console.log(data);
+                    $('#modalAddProduct').modal('hide');
+                    window.location.reload();
+                    toastr.success('Upload thành công ', 'Haha!');
+                },
+                error: function (response, data) {
+                    toastr.error('có lỗi xảy ra . Xin vui lòng thử lại', 'Inconceivable!');
+                }
+            });
+        });
+        $("#searchProduct").on('click', function () {
+            let keyword = null;
+            let key = $('#Product').val().trim().toLocaleLowerCase();
+            if(key != null) {
+                keyword = $('#Product').val().trim().toLocaleLowerCase();
+            }else {
+                keyword = '';
+            }
+
+            $.ajax({
+                type:"GET",
+                url:"http://localhost:8080/search?keyword="+ keyword,
+                processData: false,
+                contentType: 'application/json',
+                success: function(){
+                    // server trả về HTTP status code là 200 => Thành công
+                    //hàm đc thực thi khi request thành công không có lỗi
+                    window.location.href = "http://localhost:8080/search?keyword="+ keyword;
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>
