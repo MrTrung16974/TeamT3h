@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+</head>
+<body>
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#create-new-actor">
+    Create new product
+</button>
+
+<div>
+    <h2>Giỏ hàng của bạn</h2>
+    <p>SỐ sản phẩm trong giỏ : <span id="size-cart"></span></p>
+    <div id="list-item-cart">
+
+    </div>
+    <p>Total : <span id="total-cart"></span></p>
+    <button>Thanh toán</button>
+</div>
+
+<div class="container">
+    <div id="list-product" class="row">
+        <div class="card col-3" style="width: 18rem;" th:each="product: ${lstProduct}" >
+            <img src="https://cf.shopee.vn/file/110be78c00d495ae468f1d1bd9f51815" class="card-img-top" alt="...">
+            <div class="card-body" >
+                <h5 class="card-title" th:text="${product.getId()}"></h5>
+                <h5 class="card-title"th:text="${product.getName()}"></h5>
+                <p class="card-text"th:text="${product.getPrice()}"></p>
+                <p class="card-text"th:text="${product.getNumber()}"></p>
+                <button class="btn btn-primary" onclick="addToCartDB(1)">Add to cart</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal create new product -->
+<div class="modal fade" id="create-new-actor" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Create new Actor</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="actorName">Actor Name</label>
+                    <input type="text" class="form-control" id="actorName">
+                </div>
+                <div class="form-group">
+                    <label for="actorAge">Actor Age</label>
+                    <input type="text" class="form-control" id="actorAge">
+                </div>
+                <div class="form-group">
+                    <label for="actorCountry">Actor Country</label>
+                    <input type="text" class="form-control" id="actorCountry">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button onclick="addProduct()" type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+
+<script>
+    var listProductCart = [];
+    var cart = {
+        id:"",
+        buyer:"",
+        listProduct:[],
+        status:""
+    };
+    getProductInCart();
+    function getProductInCart(){
+        $.ajax({
+            url:"http://localhost:8088/order/products/hiep",
+            type:"GET",
+            success: function (response) {
+                console.log(response);
+                if(response.code == '00'){
+                    cart = response.data;
+                }
+            },
+            error: function (error) {
+                alert(error);
+            }
+        })
+    }
+
+    function getCookie(cname) {
+        var name = cname + "=";
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var ca = decodedCookie.split(';');
+        for(var i = 0; i <ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+    }
+    function setCookie(cname, cvalue, exdays) {
+        var d = new Date();
+        d.setTime(d.getTime() + (exdays*24*60*60*1000));
+        var expires = "expires="+ d.toUTCString();
+        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    }
+
+    function addToCartDB(product){
+        let updateCartRequest = {
+            name:"hiep",
+            lstProductCart:[{
+                id:1,
+                number:1,
+                type:1
+            }],
+        };
+        $.ajax({
+            url:"http://localhost:8088/order/update/"+cart.id,
+            type:"PUT",
+            data:JSON.stringify(updateCartRequest),
+            contentType: "application/json",
+            success: function (response) {
+                console.log(response);
+                if(response.code == '00'){
+                    cart = response.data;
+                }
+            },
+            error: function (error) {
+                alert(error);
+            }
+        })
+    }
+    // function addToCart(id) {
+    //     //123,456,id
+    //     var listProduct = getCookie("productCart");
+    //     console.log("List Product before in cookie",listProduct);
+    //     if(listProduct){
+    //         listProduct += ","+id;
+    //     }else{
+    //         listProduct = id;
+    //     }
+    //     setCookie("productCart",listProduct);
+    // }
+</script>
+</body>
+</html>
+<!--http://68e27b18.ngrok.io/product/list?page=0&pageSize=5-->
