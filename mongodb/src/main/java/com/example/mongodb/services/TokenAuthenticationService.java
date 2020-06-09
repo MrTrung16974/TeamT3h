@@ -14,6 +14,10 @@ import java.util.Optional;
 public class TokenAuthenticationService {
     static final long EXPIRATIONTIME = 864_000_000;
     static final String SECRET = "trungth";
+    @Autowired
+    TokenAuthenticationService tokenAuthenticationService;
+    @Autowired
+    UserRepository userRepository;
 
     public String generateJWT(String username) {
         String JWT = Jwts.builder()
@@ -35,10 +39,6 @@ public class TokenAuthenticationService {
         }
         return null;
     }
-    @Autowired
-    TokenAuthenticationService tokenAuthenticationService;
-    @Autowired
-    UserRepository userRepository;
 
     public boolean validateToKen(String token) {
         try {
