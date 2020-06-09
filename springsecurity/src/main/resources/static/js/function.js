@@ -36,10 +36,13 @@ function loginUser() {
             if(response.code == "00") {
                 if(response.data != null) {
                     setCookie("user", response.data);
-                    console.log(response.data);
+                    user = response.data;
+                    toastr.error('Logic success!', response.message);
                 }
-                if(user != "" || user != null) {
+                if(user != "" && user != null) {
                     window.location.href = "http://localhost:8089/home"
+                }else {
+                    window.location.href = "http://localhost:8089/login?error=true"
                 }
             }
             else {
@@ -63,7 +66,7 @@ function registerUser() {
             if(response.code == "00") {
                 if(response.data != null) {
                     setCookie("user", response.data);
-                    console.log(response.data);
+                    toastr.error('Register success!', response.message);
                 }
                 // if(user != "" || user != null) {
                 //     window.location.href = "http://localhost:8089/"+ response.data;
@@ -77,13 +80,16 @@ function registerUser() {
 }
 
 if(user != null && user != "") {
+
     $.ajax({
         url: "http://localhost:8099/v1/api/getInfoUser",
         type: "GET",
         dataType: 'json',
-        headers: {
-            "Authorization": + user
+        async: false,
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader ("Authorization", user);
         },
+        contentType: "application/json",
         // data: '{ "comment" }',
         success: function (response) {
             if(response.code == "00") {
@@ -127,9 +133,16 @@ function searchProduct(page) {
 }
 
 // cart product
+
+if(user != "" && username != "") {
+    getProductInCast();
+}else {
+    $('#login-user').css("display", "block");
+    $('#logout-user').css("display", "none");
+}
 function getProductInCast() {
     $.ajax({
-        url: "http://localhost:8099/order/products/" + user,
+        url: "http://localhost:8099/order/products/" + username,
         type: "GET",
         success: function (response) {
             if(response.code = '00') {
@@ -151,62 +164,62 @@ function getProductInCast() {
     });
 }
 
-function addToCastDetailDB(idProduct, oldNumber) {
-    let updateCastRequest = [];
-    if(user != "") {
-        let newNumber = $("#qty").val().trim();
-        if(newNumber > 0) {
-            newNumber -= oldNumber;
-            console.log(newNumber);
-            if(newNumber < oldNumber) {
-                updateCastRequest = {
-                    name: user,
-                    listProductCast: [{
-                        id: idProduct,
-                        number: newNumber,
-                        type: 1
-                    }]
-                };
-            }else {
-                updateCastRequest = {
-                    name: user,
-                    listProductCast: [{
-                        id: idProduct,
-                        number: newNumber,
-                        type: 2
-                    }]
-                };
-            }
-            $.ajax({
-                url: "http://localhost:8099/order/update/" + cart.id,
-                type: "POST",
-                data: JSON.stringify(updateCastRequest),
-                contentType: "application/json",
-                success: function (response) {
-                    if (response.code = "00") {
-                        cart = response.data;
-                        if (cart.listProduct != null) {
-                            getTotalProductInCast(cart);
-                            rederDataCast(cart.listProduct);
-                            rederDataCastBoxUp(cart.listProduct);
-                            if (cart.listProduct[0] != null) {
-                                getPriceProductInCast(cart);
-                                toastr.error('Add product success!', "HAHA");
-                            }
-                        }
-                    }
-                },
-                error: function (error) {
-                    toastr.error('có lỗi xảy ra . Xin vui lòng thử lại', response.message);
-                }
-            });
-        }else {
-            toastr.error('Bạn nhập nhâp số vào nếu ko thì chết đó làm khó nhau vcl! Mịa!',  "HAHA");
-        }
-    }else {
-        toastr.error('Bạn cần đăng nhâp!',  "HAHA");
-    }
-}
+// function addToCastDetailDB(idProduct, oldNumber) {
+//     let updateCastRequest = [];
+//     if(user != "") {
+//         let newNumber = $("#qty").val().trim();
+//         if(newNumber > 0) {
+//             newNumber -= oldNumber;
+//             console.log(newNumber);
+//             if(newNumber < oldNumber) {
+//                 updateCastRequest = {
+//                     name: user,
+//                     listProductCast: [{
+//                         id: idProduct,
+//                         number: newNumber,
+//                         type: 1
+//                     }]
+//                 };
+//             }else {
+//                 updateCastRequest = {
+//                     name: user,
+//                     listProductCast: [{
+//                         id: idProduct,
+//                         number: newNumber,
+//                         type: 2
+//                     }]
+//                 };
+//             }
+//             $.ajax({
+//                 url: "http://localhost:8099/order/update/" + cart.id,
+//                 type: "POST",
+//                 data: JSON.stringify(updateCastRequest),
+//                 contentType: "application/json",
+//                 success: function (response) {
+//                     if (response.code = "00") {
+//                         cart = response.data;
+//                         if (cart.listProduct != null) {
+//                             getTotalProductInCast(cart);
+//                             rederDataCast(cart.listProduct);
+//                             rederDataCastBoxUp(cart.listProduct);
+//                             if (cart.listProduct[0] != null) {
+//                                 getPriceProductInCast(cart);
+//                                 toastr.error('Add product success!', "HAHA");
+//                             }
+//                         }
+//                     }
+//                 },
+//                 error: function (error) {
+//                     toastr.error('có lỗi xảy ra . Xin vui lòng thử lại', response.message);
+//                 }
+//             });
+//         }else {
+//             toastr.error('Bạn nhập nhâp số vào nếu ko thì chết đó làm khó nhau vcl! Mịa!',  "HAHA");
+//         }
+//     }else {
+//         toastr.error('Bạn cần đăng nhâp!',  "HAHA");
+//     }
+// }
 
 function addToCastDB(idProduct) {
     if(user != "") {

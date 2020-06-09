@@ -1,5 +1,6 @@
 // khai báo biến
 var user = getCookie("user");
+var username = getCookie("username");
 console.log(user);
 var keyword = "";
 var pageDefault = 0;
@@ -78,17 +79,17 @@ function getPriceProductInCast(cast) {
 }
 
 //logic user name
-
-if(user != "") {
-    getProductInCast();
-}else {
-    $('#login-user').css("display", "block");
-    $('#logout-user').css("display", "none");
+function saveUserName() {
+    let username = $("#username").val().trim();
+    if(username != null) {
+        setCookie("username", username);
+    }
+    console.log(username);
 }
 
 function loadPageCast() {
     if(user != null && user != "") {
-        window.location.href = "http://localhost:8089/cast"
+        window.location.href = "http://localhost:8089/cart"
     }else {
         window.location.href = "http://localhost:8089/login"
 
