@@ -1,27 +1,6 @@
-// // find product all
 
 //check the user already logged
-if(user != null || user != "") {
-    $.ajax({
-        url: "http://localhost:8099/v1/api/getInfoUser",
-        type: "GET",
-        dataType: 'json',
-        headers: {
-            "Authorization": "Basic " + btoa('Authen' + ":" + user)
-        },
-        // data: '{ "comment" }',
-        success: function (response) {
-            if(response.code == "00") {
-                console.log(response.data);
-            }else {
-                toastr.error('Find not data!', response.message);
-            }
-        },
-        error: function (result) {
-            toastr.error('có lỗi xảy ra . Xin vui lòng thử lại', response.message);
-        }
-    });
-}
+// find product all
 $.ajax({
     url: "http://localhost:8099/v1/api/product/search?name="+keyword+"&page="+pageDefault+"&perPage=10",
     type: "GET",
@@ -43,6 +22,81 @@ $.ajax({
         toastr.error('có lỗi xảy ra . Xin vui lòng thử lại', response.message);
     }
 });
+
+function loginUser() {
+    let username = $("#username").val().trim();
+    let password = $("#password").val().trim();
+    $.ajax({
+        type: "POST",
+        url: "http://localhost:8099/v1/api/login?username="+username+"&password="+ password,
+        processData: false,
+        success: function (response) {
+            // server trả về HTTP status code là 200 => Thành công
+            //hàm đc thực thi khi request thành công không có lỗi
+            if(response.code == "00") {
+                if(response.data != null) {
+                    setCookie("user", response.data);
+                    console.log(response.data);
+                }
+                if(user != "" || user != null) {
+                    window.location.href = "http://localhost:8089/home"
+                }
+            }
+            else {
+                console.log(response.message);
+            }
+        }
+    });
+}
+
+function registerUser() {
+    let name = $("#regiter-name").val().trim();
+    let username = $("#regiter-username").val().trim();
+    let password = $("#regiter-passwprd").val().trim();
+    $.ajax({
+        type: "POST",
+        url: "http://localhost:8099/register?username="+username+"&password="+ password+"&name="+ name,
+        processData: false,
+        success: function (response) {
+            // server trả về HTTP status code là 200 => Thành công
+            //hàm đc thực thi khi request thành công không có lỗi
+            if(response.code == "00") {
+                if(response.data != null) {
+                    setCookie("user", response.data);
+                    console.log(response.data);
+                }
+                // if(user != "" || user != null) {
+                //     window.location.href = "http://localhost:8089/"+ response.data;
+                // }
+            }
+            else {
+                console.log(response.message);
+            }
+        }
+    });
+}
+
+if(user != null && user != "") {
+    $.ajax({
+        url: "http://localhost:8099/v1/api/getInfoUser",
+        type: "GET",
+        dataType: 'json',
+        headers: {
+            "Authorization": + user
+        },
+        // data: '{ "comment" }',
+        success: function (response) {
+            if(response.code == "00") {
+                console.log(response.data);
+            }else {
+                toastr.error('Find not data!', response.message);
+            }
+        },
+        error: function (result) {
+            toastr.error('có lỗi xảy ra . Xin vui lòng thử lại', response.message);
+        }
+    });
+}
 
 function searchProduct(page) {
     pageDefault = page;
@@ -73,13 +127,6 @@ function searchProduct(page) {
 }
 
 // cart product
-if(user != "") {
-    getProductInCast();
-}else {
-    $('#login-user').css("display", "block");
-    $('#logout-user').css("display", "none");
-}
-
 function getProductInCast() {
     $.ajax({
         url: "http://localhost:8099/order/products/" + user,
