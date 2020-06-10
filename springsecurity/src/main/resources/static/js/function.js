@@ -88,8 +88,8 @@ function logoutUser() {
             // server trả về HTTP status code là 200 => Thành công
             //hàm đc thực thi khi request thành công không có lỗi
                 if(response.code == "00") {
-                    delete_cookie("user");
-                    delete_cookie("username")
+                    deleteCookie("user");
+                    deleteCookie("username")
                     toastr.error('Logout success!', response.message);
                 if(user != "" && user != null) {
                     window.location.href = "http://localhost:8089/login"

@@ -128,8 +128,8 @@ function setCookie(cname, cvalue, exdays) {
     document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
 
-function delete_cookie( name, path, domain ) {
-    if( get_cookie( name ) ) {
+function deleteCookie( name, path, domain ) {
+    if( getCookie( name ) ) {
         document.cookie = name + "=" +
             ((path) ? ";path="+path:"")+
             ((domain)?";domain="+domain:"") +
