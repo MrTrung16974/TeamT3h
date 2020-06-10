@@ -79,10 +79,15 @@ function getPriceProductInCast(cast) {
 }
 
 //logic user name
+if(pathname == "/logout") {
+    setCookie("user", "");
+}
+
 function saveUserName() {
     let username = $("#username").val().trim();
     if(username != null) {
-        setCookie("username", username);
+        delete_cookie("user");
+        delete_cookie("username");
     }
     console.log(username);
 }
@@ -126,4 +131,13 @@ function setCookie(cname, cvalue, exdays) {
     d.setTime(d.getTime() + (exdays*24*60*60*1000));
     var expires = "expires="+ d.toUTCString();
     document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+function delete_cookie( name, path, domain ) {
+    if( get_cookie( name ) ) {
+        document.cookie = name + "=" +
+            ((path) ? ";path="+path:"")+
+            ((domain)?";domain="+domain:"") +
+            ";expires=Thu, 01 Jan 1970 00:00:01 GMT";
+    }
 }
