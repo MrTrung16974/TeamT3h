@@ -79,6 +79,30 @@ function registerUser() {
     });
 }
 
+function logoutUser() {
+    $.ajax({
+        type: "POST",
+        url: "http://localhost:8099/v1/api/logout",
+        processData: false,
+        success: function (response) {
+            // server trả về HTTP status code là 200 => Thành công
+            //hàm đc thực thi khi request thành công không có lỗi
+                if(response.code == "00") {
+                    delete_cookie("user");
+                    delete_cookie("username")
+                    toastr.error('Logout success!', response.message);
+                if(user != "" && user != null) {
+                    window.location.href = "http://localhost:8089/login"
+                }else {
+                    toastr.error('Logout error!', response.message);
+                }
+            }else {
+                console.log(response.message);
+            }
+        }
+    });
+}
+
 if(user != null && user != "") {
 
     $.ajax({

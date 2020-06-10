@@ -79,15 +79,10 @@ function getPriceProductInCast(cast) {
 }
 
 //logic user name
-if(pathname == "/logout") {
-    setCookie("user", "");
-}
-
 function saveUserName() {
     let username = $("#username").val().trim();
     if(username != null) {
-        delete_cookie("user");
-        delete_cookie("username");
+        setCookie("username", username);
     }
     console.log(username);
 }

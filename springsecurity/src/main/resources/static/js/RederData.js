@@ -121,7 +121,7 @@ function rederUserInfo(data) {
         $('#box-up-info-user').append(
             `<ul>
                 <li><a href="#">Tài khoản của tôi</a></li>
-                <li><a href="/logout">Đăng Xuất</a></li>
+                <li><a onclick="logoutUser()">Đăng Xuất</a></li>
             </ul>`
         );
         $('#name-user').text(data.buyer);
